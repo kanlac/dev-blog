@@ -1,4 +1,4 @@
-# [Notes] Flask Web Development
+# Flask Web Development
 
 ## Dependences
  Flask 的主要两大依赖
@@ -50,14 +50,14 @@ if __name__ == '__main__':
 
 ### 运行
 用 `Flask` 实例的 `app()` 方法来启动服务器（注释 `c`）。然后执行 Python 程序。
-![](DraggedImage.jpeg) 
-![](DraggedImage-1.jpeg)
+![][image-1] 
+![][image-2]
 
 ### 请求、响应周期
 
 #### a. (Application and Request) Contexts
 Flask 有两种场景（**context**），四个全局场景变量（**context variables**）：
-![](DraggedImage-2.jpeg)
+![][image-3]
 
 在派发一个请求前，Flask 会激活（activates/pushes）两种 contexts，当请求处理完毕时移除。
 
@@ -190,8 +190,8 @@ def user(name):
 ```
 
 #### Jinja2 variable filters
-Jinja2 提供了一些实用的变量过滤器，查阅[官方文档](http://jinja.pocoo.org/docs/2.10/templates/)获取更多用法。
-![](DraggedImage-3.jpeg)
+Jinja2 提供了一些实用的变量过滤器，查阅[官方文档][1]获取更多用法。
+![][image-4]
 例如，Jinja2 默认会对变量进行转义，如果需要传递 HTML 代码，用 `safe` 来避免转义：`{{ variable_name|safe }}`。但要注意，永远不要对不可信变量使用 `safe` 过滤（比如用户提交的表单）。
 
 #### Control Structures
@@ -290,7 +290,7 @@ instance = Bootstrap(app)
 
 Bootstrap 本身是在 base template 的 `styles` 和 `scripts` block 里面定义的，所以如果要继承这两个 block，一定要加上 `{{ super() }}`。
 
-可供使用的 blocks 参考：[https://pythonhosted.org/Flask-Bootstrap/basic-usage.html](https://pythonhosted.org/Flask-Bootstrap/basic-usage.html)
+可供使用的 blocks 参考：[https://pythonhosted.org/Flask-Bootstrap/basic-usage.html][2]
 
 ### 链接处理
 Flask 提供了一个 `url_for()` 方法。几种用法举例：
@@ -390,4 +390,13 @@ class NameForm(Form):
 
 传入构造器的参数，即 `Form` 基类，是属于 Flask-WTF 扩展下的；而 HTML field 和 validator 是在 WTForms 包中定义的。
 
-[^1]:	[http://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html](http://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html)
+[^1]:	[http://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html][3]
+
+[1]:	http://jinja.pocoo.org/docs/2.10/templates/
+[2]:	https://pythonhosted.org/Flask-Bootstrap/basic-usage.html
+[3]:	http://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html
+
+[image-1]:	DraggedImage.jpeg
+[image-2]:	DraggedImage-1.jpeg
+[image-3]:	DraggedImage-2.jpeg
+[image-4]:	DraggedImage-3.jpeg
