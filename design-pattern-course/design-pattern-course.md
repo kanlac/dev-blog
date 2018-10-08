@@ -186,5 +186,5 @@ public class Client {
 - 样例二：参考[Tutorialspoint][3] 或菜鸟教程
 
 [1]:	/Xnip2018-10-08_14-59-10.jpg
-[2]:	/example-I.java
+[2]:	/design-pattern-course/example-I.java
 [3]:	https://www.tutorialspoint.com/design_pattern/abstract_factory_pattern.htm
