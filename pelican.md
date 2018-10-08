@@ -1,7 +1,7 @@
 # Pelican 笔记
 
-## Installing Pelican
-安装依赖
+## 安装
+通过 `pip` 安装，建议建一个 virtualenv 环境。
 ```
 $ pip install pelican Markdown typogrify
 ```
@@ -21,7 +21,7 @@ $ export LC_ALL=en_US.UTF-8
 $ export LANG=en_US.UTF-8
 ```
 
-## Writing content
+## 撰写内容
 articles 和 pages 的区别：
 前者是按时间相关的博文，后者是很少更改的（如「关于」）
 
@@ -61,12 +61,12 @@ metadata 甚至可以通过正则从文件名中获取。比如从我现有的�
 
 如果要排除单篇页面在导航菜单中显示，在 metadata 中设置 `status: hidden`（可以用来制作错误页）
 
-### Linking to internal content
-直接看原文：[http://docs.getpelican.com/en/stable/content.html#linking-to-internal-content](http://docs.getpelican.com/en/stable/content.html#linking-to-internal-content)
+### 内部链接
+直接看原文：[http://docs.getpelican.com/en/stable/content.html#linking-to-internal-content][1]
 
-### Syntax highliginting
+### 语法高亮
 
-### Publishing drafts
+### 发布草稿
 添加 metadata `Status: draft`，文章将会被放入 drafts 文件夹。
 
 设置默认新文章为草稿：
@@ -77,7 +77,7 @@ DEFAULT_METADATA = {
 ```
 设置为发布状态：`Status: published`
 
-## Publish your site
+## 发布网站
 生成静态网页，生成的内容会出现在 output/ 下
 ```
 $ pelican content [-s path/to/settings.py]
@@ -90,7 +90,7 @@ $ cd output
 $ python -m http.server
 ```
 
-### Deployment
+### 部署
 ```
 $ pelican content -s publishconf.py
 ```
@@ -100,8 +100,23 @@ $ pelican content -s publishconf.py
 from pelicanconf import *
 ```
 
-### Automation
+### 自动化
 Fabric 或 Make
 
 ## Settings
-……
+🚩
+
+## 发布到 GitHub Pages
+GitHub Pages 有两种，Project Pages 和 User Pages，只介绍后者，也比较简单。简单来说只要把 output 目录下的文件 push 到 \<username\>.github.io 的 master 分支下就好了。
+
+用 `pip` 安装 `ghp-import` 这个工具，然后执行：
+```
+$ pelican content -o output -s pelicanconf.py
+$ ghp-import output
+$ git push <remote-url> gh-pages:master
+```
+`<remote-url>` 填写项目的 HTTPS url（不包括尖括号）。`ghp-import` 会在本地 repo 中更新（建立）gh-pages 分支并 push 到远程 repo 的 master 分支。
+
+完成后，如果没有报错，就可以从 https://\<username\>.github.io/ 访问到了。
+
+[1]:	http://docs.getpelican.com/en/stable/content.html#linking-to-internal-content
