@@ -5,6 +5,6 @@
 - 🕓 [Pelican 文档][4]
 
 [1]:	/Flask/flask-web-development.md
-[2]:	/design-pattern-course.md
+[2]:	/design-pattern-course/design-pattern-course.md
 [3]:	/neo4j-graph-db-and-ogm.md
 [4]:    /pelican.md
