@@ -127,6 +127,10 @@ public class Client {
 样例一的产品族为：高档别墅，中档别墅，高档公寓，中档公寓；
 样例二的产品族为：颜色产品（包括蓝色，黄色等），图形产品（包括圆形，矩形等）。
 
+结合实现代码作下面的分析：
+- 样例一：[code][1]
+- 样例二：参考[Tutorialspoint][2] 或菜鸟教程
+
 首先提取出产品族中的属性。对于样例一，首先分析产品结构，可以提取出两个属性：
 - 类型（type）
 	- 别墅（house）
@@ -159,10 +163,10 @@ public class Client {
 
 相应的，对于属于单一属性产品族的样例二则应该是：
 - 产品族
-	- Rectangle \<Shape\>
-	- Circle \<Shape\>
-	- Blue \<Color\>
-	- Yellow \<Color\>
+	- Rectangle \<Shape\\\>
+	- Circle \<Shape\\\>
+	- Blue \<Color\\\>
+	- Yellow \<Color\\\>
 - 工厂族
 	- 图形工厂（ShapeFactory）
 	- 颜色工厂（ColorFactory）
@@ -171,8 +175,8 @@ public class Client {
 
 对于组合属性产品，它的两个属性可以在逻辑上分离。在前面的步骤中，样例一只是以建筑类型这个属性来定义接口，另一个属性——建筑等级——被放到工厂层去了，也就是第二属性的数量决定工厂实现类的数量。这样把产品属性在处理逻辑上分离的做法是明显不适用于单一属性产品的。
 
-两者在抽象工厂类的定义上也是有差异的。乍看上去都是有两个返回产品对象的方法，但样例一返回的是 `House` 和 `Condo` 对象，样例二返回的是 `Shape` 和 `Color` 对象，发现差异了吗？
-![][1]
+两者在抽象工厂类的定义上也是有差异的。乍看上去都是有两个返回产品对象的方法，但样例一返回的是 `House` 和 `Condo` 对象，样例二返回的是 `Shape` 和 `Color` 对象。
+![发现差异了吗？][image-1]
 
 
 ---
@@ -181,10 +185,9 @@ public class Client {
 
 如果要在原有的产品族（`House` + `Condo`）中增加新的产品，则在工厂阶层只需要增加工厂实类，这种情况下符合开闭原则；如果要扩展产品族，则必须在每个工厂实类中增加方法（getXXX），这种情况下不符合开闭原则。
 
-实现代码：
-- 样例一：[code][2]
-- 样例二：参考[Tutorialspoint][3] 或菜鸟教程
 
-[1]:	/design-pattern-course/Xnip2018-10-08_14-59-10.jpg
-[2]:	/design-pattern-course/example-I.java
-[3]:	https://www.tutorialspoint.com/design_pattern/abstract_factory_pattern.htm
+
+[1]:	/design-pattern-course/example-I.java
+[2]:	https://www.tutorialspoint.com/design_pattern/abstract_factory_pattern.htm
+
+[image-1]:	/design-pattern-course/Desktop.png "screenshot"
