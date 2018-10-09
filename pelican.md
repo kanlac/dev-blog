@@ -104,7 +104,17 @@ Fabric 或 Make
 🔘
 
 ## Settings
-🔘
+通过制定配置文件生成静态文件的命令：
+```
+$ pelican content -s path/to/your/pelicanconf.py
+```
+`quick-start` 默认生成 /pelicanconf.py。
+
+当进行设置的调试时，建议像前面那样关闭缓存功能。
+
+[样例配置][2]可参考。
+
+所有键必须为大写；除了 number、boolean、dict 和 tuple 类型，其他的值都应该用引号圈起来。
 
 ## 发布到 GitHub Pages
 GitHub Pages 有两种，Project Pages 和 User Pages，只介绍后者，也比较简单。简单来说只要把 output 目录下的文件 push 到 \<username\>.github.io 的 master 分支下就好了。
@@ -119,4 +129,32 @@ $ git push <remote-url> gh-pages:master
 
 完成后，如果没有报错，就可以从 https://\<username\>.github.io/ 访问到了。
 
+## 自定义模版
+在设置中添加 `THEME` 字段。
+
+一次性指定生成所用模版用 `-t`：
+```
+$ pelican content -t /projects/your-site/themes/your-theme
+```
+
+自定义主题必须遵循以下结构：
+```
+├── static
+│   ├── css
+│   └── images
+└── templates
+    ├── archives.html         // to display archives
+    ├── period_archives.html  // to display time-period archives
+    ├── article.html          // processed for each article
+    ├── author.html           // processed for each author
+    ├── authors.html          // must list all the authors
+    ├── categories.html       // must list all the categories
+    ├── category.html         // processed for each category
+    ├── index.html            // the index (list all the articles)
+    ├── page.html             // processed for each page
+    ├── tag.html              // processed for each tag
+    └── tags.html             // must list all the tags. Can be a tag cloud.
+```
+
 [1]:	http://docs.getpelican.com/en/stable/content.html#linking-to-internal-content
+[2]:	https://raw.githubusercontent.com/getpelican/pelican/master/samples/pelican.conf.py
