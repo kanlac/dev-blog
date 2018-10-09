@@ -165,29 +165,29 @@ public class Client {
 
 相对应的，对于属于单一属性产品的样例二则应该是：
 - 产品族
-	- Rectangle \<Shape\>
-	- Circle \<Shape\>
-	- Blue \<Color\>
-	- Yellow \<Color\>
+	- Rectangle \<Shape\\\>
+	- Circle \<Shape\\\>
+	- Blue \<Color\\\>
+	- Yellow \<Color\\\>
 - 工厂族
 	- 图形工厂（ShapeFactory）
 	- 颜色工厂（ColorFactory）
 
-从上面可以看出，两者的产品类实现过程也是不一样的。样例一有两个接口类（`House` `Condo`），两个实现类；样例二有两个接口类，四个实现类。
+从上面可以看出，两者的产品类实现过程也是不一样的。同样是四个产品，样例一有两个接口类（`House` `Condo`），两个实现类；样例二有两个接口类，四个实现类。
 
-对于组合属性产品，它的两个属性可以在逻辑上分离。在前面的步骤中，样例一只是以建筑类型这个属性来定义接口，另一个属性——建筑等级——被放到工厂层去了，也就是第二属性的数量决定工厂实现类的数量。这样把产品属性在处理逻辑上分离的做法是明显不适用于单一属性产品的。
+对于组合属性产品，它的两个属性可以在逻辑上分离。在前面的步骤中，样例一只是以\<建筑类型\>这个属性来定义接口，另一个属性——\<建筑等级\>——被放到工厂层去了，也就是修饰属性决定工厂层实现。
 
 两者在抽象工厂类的定义上也是有差异的。乍看上去都是有两个返回产品对象的方法，但样例一返回的是 `House` 和 `Condo` 对象，样例二返回的是 `Shape` 和 `Color` 对象。
 ![发现差异了吗？][image-1]
 
-最后是抽象工厂的实现。对于组合属性产品，工厂实现类基于另一组属性（两种房屋等级）下的取值多少；对于单一属性产品，工厂实现类基于产品族的属性本身（颜色和形状）。
+最后是抽象工厂的实现。对于组合属性产品，工厂实现类基于修饰属性下的取值多少（两种房屋等级）；对于单一属性产品，工厂实现类基于产品族的属性本身（颜色和形状）。
 
 有些抽象工厂的实现中，还有一层创建具体工厂的逻辑（`FactoryProducer`），在样例一的代码中通过为抽象工厂添加静态函数 `getBuildingFactory()` 省去了。
 
 #### 抽象工厂与开闭原则
 抽象工厂产品族的扩展可以分为两种，一种是**产品属性本身的扩展**，如在 Shape 和 Color 外增加一个 Opacity，另一种是**属性下的值的扩展**，如在\<\<`House`\>\>和\<\<`Condo`\>\>外增加一种房屋类型。
 
-![][3]
+![][image-2]
 
 > 《软件设计模式与体系结构》中考虑扩展性时，采取的是「工厂层」和「产品层」的视角去分析，但考虑到这里组合属性和单一属性不同样例的区别，我不采用书中的分析方法。
 
@@ -213,6 +213,6 @@ public class Client {
 
 [1]:	/design-pattern-course/example-I.java
 [2]:	https://www.tutorialspoint.com/design_pattern/abstract_factory_pattern.htm
-[3]:	/design-pattern-course/Desktop2.png
 
 [image-1]:	/design-pattern-course/Desktop.png "screenshot"
+[image-2]:	/design-pattern-course/Desktop2.png
