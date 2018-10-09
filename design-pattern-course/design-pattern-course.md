@@ -211,8 +211,6 @@ public class Client {
 
 前两种较常用，它们都不允许在外部实例化，因而也不能被继承。唯一实例对象的初始化和获取函数（`getInstance()`）都是静态的。
 
-## 多例模式
-
 [1]:	/design-pattern-course/example-I.java
 [2]:	https://www.tutorialspoint.com/design_pattern/abstract_factory_pattern.htm
 [3]:	/design-pattern-course/Desktop2.png
