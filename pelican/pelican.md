@@ -126,8 +126,8 @@ $ git push <remote-url> gh-pages:master
 完成后，如果没有报错，就可以从 https://\<username\>.github.io/ 访问到了。
 
 ## 自定义模版
-通过以下两个方法可以改变 Pelican 默认使用的 Simple 模版：
-1. 在设置中添加 `THEME` 字段，值为模版的路径。模版不必在该 Pelican 项目目录下；
+通过以下两个方法可以改变 Pelican 默认使用的 Simple 模版（模版不必在该 Pelican 项目目录下）：
+1. 在设置中添加 `THEME` 字段，值为模版的路径；
 2. 生成网站命令的选项 `-t`
 ```
 $ pelican content -t /projects/your-site/themes/your-theme
