@@ -154,7 +154,7 @@ $ pelican content -t /projects/your-site/themes/your-theme
 
 我们在 pelicanconf.py 中定义的变量，是作为[**模版变量**][3]可被全局可访问的。除此之外，Pelican 还针对各个模版提供了多组局部变量。
 
-Pelican 提供了可在模版中使用的**对象**，如最主要的 Article 对象。但匪夷所思的是文档并没有给出一个更详细的文档和全部对象列表。几个主要对象的简要说明：
+Pelican 提供了可在模版中使用的[**对象**][4]，如最主要的 Article 对象。但匪夷所思的是文档并没有给出一个更详细的文档和全部对象列表。几个主要对象的简要说明：
 - _Article_：该对象的字符串表示是它的 `source_path`属性
 - _Author_ / _Category_ / _Tag_：来源于 pelicanconf.py 或文章的 metadata；字符串表示是它们的 `name` 属性
 - _Page_：字符串表示是它的 `source_path`属性
@@ -164,3 +164,4 @@ Pelican 提供了可在模版中使用的**对象**，如最主要的 Article �
 [1]:	http://docs.getpelican.com/en/stable/content.html#linking-to-internal-content
 [2]:	https://raw.githubusercontent.com/getpelican/pelican/master/samples/pelican.conf.py
 [3]:	http://docs.getpelican.com/en/stable/themes.html#templates-and-variables
+[4]:	http://docs.getpelican.com/en/stable/themes.html#objects
