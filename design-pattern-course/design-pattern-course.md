@@ -12,6 +12,14 @@
 
 “Sol(l)id Core”
 
+## 设计模式分类概览
+- 创建型设计模式
+	- 工厂模式（Factory Pattern）
+	- 单例模式（Singleton Pattern）
+	- 生成器模式（Builder Pattern）
+- 结构型设计模式
+- 行为型设计模式
+
 ## 工厂模式（Factory Pattern）
 
 ### 一、简单工厂模式
@@ -165,10 +173,10 @@ public class Client {
 
 相对应的，对于属于单一属性产品的样例二则应该是：
 - 产品族
-	- Rectangle \<Shape\\\>
-	- Circle \<Shape\\\>
-	- Blue \<Color\\\>
-	- Yellow \<Color\\\>
+	- Rectangle \<Shape\\\\\>
+	- Circle \<Shape\\\\\>
+	- Blue \<Color\\\\\>
+	- Yellow \<Color\\\\\>
 - 工厂族
 	- 图形工厂（ShapeFactory）
 	- 颜色工厂（ColorFactory）
@@ -210,6 +218,18 @@ public class Client {
 3. 构造器公有，以 HashMap 存储实例，实现可继承性。
 
 前两种较常用，它们都不允许在外部实例化，因而也不能被继承。唯一实例对象的初始化和获取函数（`getInstance()`）都是静态的。
+
+## 生成器模式（Builder Pattern）
+> 使用场景样例：一个文本编辑器应用的导出模块，导出类型有 txt，MarkDown，Word，HTML 等。
+
+生成器模式的主要思想是抽象出创建对象的步骤（文本标题、正文、元数据），使得这些步骤的不同实现可以创建对象的不同表示（HTML、MarkDown 等格式）。生成器模式主要包含以下几部分：
+- _Builder_：创建并组装产品零件，提供一个方法返回产品对象
+- _Director_：使用 Builder 提供的接口，提供产品参数，并能控制组装顺序而得到完整产品对象
+- _Product_：产品对象模型
+
+生成器模式的**优点**在于它解藕了产品的封装过程（Director）和部件表示/装配细节（Builder），改善了程序的模块化，可以方便地添加生成器或更改产品的内部表达形式。
+
+生成器模式与工厂模式类似的地方在于，两者都是把对象的创建交给一个单独的类去完成，主要区别是，工厂模式返回一个类（族），而生成器模式**逐步按照次序构建**一个复杂的对象，最后该对象被返回。
 
 [1]:	/design-pattern-course/example-I.java
 [2]:	https://www.tutorialspoint.com/design_pattern/abstract_factory_pattern.htm
