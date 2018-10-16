@@ -232,12 +232,39 @@ public class Client {
 生成器模式与工厂模式类似的地方在于，两者都是把对象的创建交给一个单独的类去完成，主要区别是，工厂模式返回一个类（族），而生成器模式**逐步按照次序构建**一个复杂的对象，最后该对象被返回。
 
 ## 原型模式（Prototype Pattern）
-创建可克隆的原型对象，然后通过快速复制原型创建出更多同类型的对象，以进行高性能的多线程任务。
+创建可克隆的原型对象，通过避免大量的初始化，以保证高效的性能。
 
-典型用例：数据库连接池
+例一：数据库连接池；
+
+例二（Tutorialspoint）：如图，利用 ShapeCache 类来获取 Shape 对象
+![][image-3]
+Shape 应应用 `Cloneable` 接口，并包含函数：
+```java
+public Object clone() {
+	Object clone = null;
+
+	try {
+		clone = super.clone();
+	} catch (CloneNotSupportedException e) {
+ 		e.printStackTrace();
+	}
+
+	return clone;
+}
+```
+
+浅克隆与深克隆：
+- 浅克隆
+	- 被克隆对象的所有变量都含有与原来的对象相同的值，而所有的对其他对象的引用仍指向原来的对象
+	- 使用 `super.clone()`
+- 深克隆
+	- 被克隆对象引用到的其它对象也一并引用
+	- 使用输出输出流（`ByteArrayOutputStream` `ByteArrayInputStream`）进行克隆
+
 
 [1]:	/design-pattern-course/example-I.java
 [2]:	https://www.tutorialspoint.com/design_pattern/abstract_factory_pattern.htm
 
-[image-1]:	/design-pattern-course/Desktop.png "screenshot"
+[image-1]:	Desktop.png "screenshot"
 [image-2]:	Desktop2.png
+[image-3]:  prototype_pattern_uml_diagram.jpg
