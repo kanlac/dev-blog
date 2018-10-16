@@ -240,4 +240,4 @@ public class Client {
 [2]:	https://www.tutorialspoint.com/design_pattern/abstract_factory_pattern.htm
 
 [image-1]:	/design-pattern-course/Desktop.png "screenshot"
-[image-2]:	/design-pattern-course/Desktop2.png
+[image-2]:	Desktop2.png
