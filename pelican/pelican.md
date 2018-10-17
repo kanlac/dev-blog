@@ -90,14 +90,9 @@ $ python3 -m http.server
 ```
 
 ### 部署
-用发布配置文件生成静态网站：
+用发布配置文件（如果有的话）生成静态网站：
 ```
 $ pelican content -s publishconf.py
-```
-
-让 publishconf.py 位于 pelicanconf.py 的基础上，在前者中添加：
-```python
-from pelicanconf import *
 ```
 
 ### 自动化
@@ -111,6 +106,16 @@ $ pelican content -s path/to/your/pelicanconf.py
 ```
 
 设置项的所有**键**必须为大写；除了 number、boolean、dict 和 tuple 类型，其他的**值**都应该包含在引号中。当进行设置的调试时，建议像前面那样关闭缓存功能。（[样例配置][2]）
+
+### URL 设置
+URL 有相对路径和绝对路径两种形式，本地测试的时候用相对路径很方便，但在发布时则绝对路径比较实用和可靠。一个两全的办法是再创建一个文章发布配置文件 publishconf.py。
+
+`*_URL` 设置表示文章发布所显示的 url，`*_SAVE_AS` 设置表示文章文件在 ouput 文件夹中的存储形式。
+
+让 publishconf.py 基于 pelicanconf.py 扩展，在前者中添加：
+```python
+from pelicanconf import *
+```
 
 ## 发布到 GitHub Pages
 GitHub Pages 有两种，Project Pages 和 User Pages，只介绍后者，也比较简单。简单来说只要把 output 目录下的文件 push 到 \<username\>.github.io 的 master 分支下就好了。
