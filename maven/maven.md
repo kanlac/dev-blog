@@ -1,16 +1,6 @@
-# Maven
+# Maven 构建工具
 
-Maven 在以下几个方面的管理中提供帮助：
-- 项目构建
-- 说明文档
-- 报告
-- 依赖
-- 版本控制
-- 发布
-
-> 简略言之，Maven 想要达成的是「从最佳实例中提供一种清晰的路径，把易于理解且高效的模式运用到项目的构建工程中」。
-
-Maven 的本质是一个插件执行框架，所有工作都是通过插件（plugin）来完成的。
+Maven 的**本质是一个插件执行框架**，所有工作都是通过插件（plugin）来完成的。使用 Maven 构建工具的目的，是为了「从**最佳实例**中提供一种清晰的路径，把易于理解且高效的模式运用到项目的构建工程中」。它的应用范围还包括项目构建、说明文档、报告、依赖、版本控制、项目发布等。
 
 ## 安装
 1. 下载：[https://maven.apache.org/download.html](https://maven.apache.org/download.html)
@@ -22,7 +12,7 @@ Maven 的本质是一个插件执行框架，所有工作都是通过插件（pl
 切换到项目目录，执行：
 `$ mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false `
 
-`archetype:generate` 称为 Maven **goal**；冒号之前的 `archetype` 称为 **plugin**。Plugin 是一组 goals 的集合。
+`archetype:generate` 称为 Maven **goal**；其中冒号之前的 `archetype` 称为 **plugin**。
 
 查阅插件列表：[https://maven.apache.org/plugins/index.html](https://maven.apache.org/plugins/index.html)
 
@@ -52,23 +42,33 @@ Maven 的本质是一个插件执行框架，所有工作都是通过插件（pl
 执行后，会编译项目并在 target 目录下生成 JAR 包。
 
 测试该 JAR 包，会看到输出 `Hello World!`：
-	$ java -cp target/my-app-1.0-SNAPSHOT.jar com.mycompany.app.App
+```
+$ java -cp target/my-app-1.0-SNAPSHOT.jar com.mycompany.app.App
+```
 
-和前面的 `archetype:generate` 不同，这里的 `package` 不是 goal 而是 **phase**。phase 是 build lifecycle 的组成单位（见后文）。
+和前面的 `archetype:generate` 不同，这里的 `package` 不是 goal 而是 **phase**（见后文）。
 
 > 默认的 Maven 通常已经能满足需求，但如果需要更改缓存位置或是使用 HTTP 协议，则需要对 Maven 进行配置——查阅 [Guide to Configuring Maven](https://maven.apache.org/guides/mini/guide-configuring-maven.html)。
 
 ## 构建生命周期（Build Lifecycle）
-即阶段（phase）的有序序列。当给出一个阶段时，就是让 Maven 从头开始一个个执行按序序列中的阶段，直到执行完给定阶段。比如执行 `compile` 阶段，那么实际执行的阶段有：
-1. validate
-2. generate-sources
-3. process-sources
-4. generate-resources
-5. process-resources
-6. compile
+Maven 构建生命周期是一组阶段（phase）的有序序列。**当执行一个阶段时，在该阶段之前已经包括它自身在内的所有阶段会被执行**。比如执行 `compile` 阶段，那么实际执行的阶段有： _validate_ -> _generate-sources_ -> _process-sources_ -> _generate-resources_ -> _process-resources_ -> _compile_ 。
 
-[http://wiki.jikexueyuan.com/project/maven/build-life-cycle.html](http://wiki.jikexueyuan.com/project/maven/build-life-cycle.html)
-[https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html)
+## Goals & plugins & phases
+重新来梳理一下这几个关键名词之间的关系。
+
+目标（goals）表示一个特定的、对构建和管理工程有帮助的任务，它可能绑定了 0 或多个构建阶段。没有绑定任何构建阶段的目标可以在构建生命周期之外被直接调用执行。
+
+阶段（phases）的序列组成一个构建生命周期，每个阶段定义了目标被执行的顺序。
+
+插件（plugins）是一组目标的集合。
+
+> 目标 -:[绑定]:-> 阶段 -:[组成]:-> 生命周期
+
+`mvn` 命令可以连续执行，如在
+```
+$ mvn clean dependency:copy-dependencies package
+```
+中，先执行 clean 阶段，然后是 dependency:copy-dependencies 目标，最后 package 阶段。
 
 ## 运行 Maven 工具
 
@@ -83,18 +83,17 @@ Maven 的本质是一个插件执行框架，所有工作都是通过插件（pl
 - **install**：安装包到本地 repo，可用作其他项目的依赖
 - **deploy**：在整合或发布环境中，把最终的包拷贝到远程 repo
 
-另外两个非默认的生命周期阶段：
+另外两个非默认的阶段：
 - **clean**：清除之前的构建中创建的 artifacts
 - **site**：为项目生成站点文档
 
 Phases 最后实际上是对应到了底层的 goals，具体每个 phase 是执行了哪些 goals，取决于打包格式是 JAR 还是 WAR。
 
-tip：phases 和 goals 允许在一个序列中执行，如
-	$ mvn clean dependency:copy-dependencies package
-
 ### 生成站点
-	$ mvn site
-*site* 阶段会根据 pom.xml 来生成站点。
+执行 site 阶段，Maven 会根据 pom.xml 来生成站点
+```
+$ mvn site
+```
 
 ## 项目对象模型
 对 pom.xml 中的一些元素做必要的解释：

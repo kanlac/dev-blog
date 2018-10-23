@@ -18,6 +18,8 @@
 	- 单例模式（Singleton Pattern）
 	- 生成器模式（Builder Pattern）
 - 结构型设计模式
+	- 适配器模式（Adapter Pattern）
+	- 装饰器模式（Decorator Pattern）
 - 行为型设计模式
 
 ## 工厂模式（Factory Pattern）
@@ -262,8 +264,13 @@ public Object clone() {
 	- 使用输出输出流（`ByteArrayOutputStream` `ByteArrayInputStream`）进行克隆
 
 
+## 适配器模式（Adapter Pattern）
+适配器模式是结构型模式，它解决两个接口不兼容的问题。
+
 [1]:	/design-pattern-course/example-I.java
 [2]:	https://www.tutorialspoint.com/design_pattern/abstract_factory_pattern.htm
+
+## 装饰器模式（Decorator Pattern）
 
 [image-1]:	Desktop.png "screenshot"
 [image-2]:	Desktop2.png

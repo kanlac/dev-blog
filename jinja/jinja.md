@@ -44,6 +44,8 @@ Jinja 模版就是一份文本文件，它可以渲染的不单单是 HTML，还
 	- `name is defined` 测试 _name_ 变量在当前模版环境下是否已定义，返回布尔值
 	- `{% if loop.index is divisibleby(3) %}` 测试是否能被三整除（参数不多于一个时可省略括号）
 
+使用过滤器来显示一个 `date` 对象：`{{ article.date|strftime('%Y-%m-%d') }}` ([Python strftime](http://docs.python.org/library/datetime.html#strftime-strptime-behavior))。
+
 ## Whitespace Control
 关于渲染过程中如何处理 whitespace 的问题。默认配置下：
 - 单个行尾换行会被省略
