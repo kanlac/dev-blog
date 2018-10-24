@@ -131,14 +131,19 @@ $ git push <remote-url> gh-pages:master
 完成后，如果没有报错，就可以从 https://\<username\>.github.io/ 访问到了。
 
 ## 自定义模版
-通过以下两个方法可以改变 Pelican 默认使用的 Simple 模版（模版不必在该 Pelican 项目目录下）：
+查看当前已安装的主题：
+```
+$ pelican-themes -l
+```
+
+Pelican 默认使用 notmyidea 模版，更改模版有两个方式（模版不必安装）：
 1. 在设置中添加 `THEME` 字段，值为模版的路径；
-2. 生成网站命令的选项 `-t`
+2. 命令选项 `-t`
 ```
 $ pelican content -t /projects/your-site/themes/your-theme
 ```
 
-自定义主题必须遵循以下结构：
+自定义主题的目录结构：
 ```
 ├── static
 │   ├── css
@@ -156,6 +161,7 @@ $ pelican content -t /projects/your-site/themes/your-theme
     ├── tag.html              // processed for each tag
     └── tags.html             // must list all the tags. Can be a tag cloud.
 ```
+只要主题遵循以上结构，Pelican 在进行渲染时能够自动根据文件命名进行渲染。不过，也可以使用 `THEME_STATIC_DIR` 来手动指定 static 目录。
 
 我们在 pelicanconf.py 中定义的变量，是作为[**模版变量**][3]可被全局可访问的。除此之外，Pelican 还针对各个模版提供了多组局部变量。
 
@@ -165,6 +171,28 @@ Pelican 提供了可在模版中使用的[**对象**][4]，如最主要的 Artic
 - _Page_：字符串表示是它的 `source_path`属性
 
 从 3.0 版本开始，Pelican 支持直接从 Simple 模版**继承**。如果有必须文件缺失，Pelican 会自动继承，以保证仍能生成静态网站。
+
+## Pelican 的工作机制
+Pelican 的处理逻辑分为一下几部分：
+- **写入器**，负责写入 HTML、RSS feed 等文件，创建后传给生成器（？）
+- **读取器**，从 HTML、MarkDown 等文件中读取内容（由于系统的可扩展性良好，完全可以添加其它文件的支持），它接受文件，返回 metadata 信息和 HTML 格式的内容
+- **生成器**，生成不同种类的结果，有 `ArticlesGenerator` `PageGenerator` 等，同样可以灵活地配置。
+
+## Pygments 代码高亮
+使用 pip 安装 `markdown` 的时候 Pygments 也同时被安装好了，通过这个扩展我们可以方便地生成 CSS 文件。
+
+查看 Pygments 支持的样式列表：
+```
+$ pygmentize -L style
+```
+在[这个网站](http://pygments.org/demo)可以实时查看效果。
+
+选择好想要的样式后，以 xcode 样式为例，使用如下代码生成 CSS：
+```
+$ pygmentize -S xcode -f html -a .highlight > pygment.css
+cp pygment.css path/to/theme/static/css/
+```
+最后别忘了在模版中添加到这个 CSS 文件的链接。
 
 [1]:	http://docs.getpelican.com/en/stable/content.html#linking-to-internal-content
 [2]:	https://raw.githubusercontent.com/getpelican/pelican/master/samples/pelican.conf.py

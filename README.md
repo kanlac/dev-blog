@@ -2,9 +2,9 @@
 - [Flask Web Development][1]
 - [Neo4j 图数据库与 Java 对象映射 ][2]
 - [Jinja 模版渲染引擎][3]
-- [Pelican][4]
 
 以下持续更新中…
+- [Pelican][4]
 - [Java 设计模式][5]
 - [Maven 构建工具][6]
 
