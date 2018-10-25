@@ -140,8 +140,9 @@ Pelican 默认使用 notmyidea 模版，更改模版有两个方式（模版不�
 1. 在设置中添加 `THEME` 字段，值为模版的路径；
 2. 命令选项 `-t`
 ```
-$ pelican content -t /projects/your-site/themes/your-theme
+$ pelican content -d -t /projects/your-site/themes/your-theme
 ```
+`-d` 选项会先删除 output 目录，重新生成目录（包括 Pelican 生成的一些 CSS）。
 
 自定义主题的目录结构：
 ```
@@ -161,7 +162,7 @@ $ pelican content -t /projects/your-site/themes/your-theme
     ├── tag.html              // processed for each tag
     └── tags.html             // must list all the tags. Can be a tag cloud.
 ```
-只要主题遵循以上结构，Pelican 在进行渲染时能够自动根据文件命名进行渲染。不过，也可以使用 `THEME_STATIC_DIR` 来手动指定 static 目录。
+以上 templates 下的 HTML 文件都是必要的，只要主题遵循以上结构，Pelican 在进行渲染时能够自动根据文件命名进行渲染。不过，也可以使用 `THEME_STATIC_DIR` 来手动指定 static 目录。
 
 我们在 pelicanconf.py 中定义的变量，是作为[**模版变量**][3]可被全局可访问的。除此之外，Pelican 还针对各个模版提供了多组局部变量。
 
