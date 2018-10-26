@@ -122,11 +122,11 @@ GitHub Pages 有两种，Project Pages 和 User Pages，只介绍后者，也比
 
 用 `pip` 安装 `ghp-import` 这个工具，然后执行：
 ```
-$ pelican content -o output -s pelicanconf.py
+$ pelican content -o output -s publishconf.py
 $ ghp-import output
 $ git push <remote-url> gh-pages:master
 ```
-`<remote-url>` 填写项目的 HTTPS url（不包括尖括号）。`ghp-import` 会在本地 repo 中更新（建立）gh-pages 分支并 push 到远程 repo 的 master 分支。
+`<remote-url>` 填写项目的 HTTPS url（`https://github.com/serfusE/serfusE.github.io.git`）。`ghp-import` 会在本地 repo 中更新（建立）gh-pages 分支并 push 到远程 repo 的 master 分支。
 
 完成后，如果没有报错，就可以从 https://\<username\>.github.io/ 访问到了。
 
@@ -142,7 +142,7 @@ Pelican 默认使用 notmyidea 模版，更改模版有两个方式（模版不�
 ```
 $ pelican content -d -t /projects/your-site/themes/your-theme
 ```
-`-d` 选项会先删除 output 目录，重新生成目录（包括 Pelican 生成的一些 CSS）。
+`-d` 选项会在重新生成前先删除 output 目录，也就是说 Pelican 并不会默认清理之前生成的资源，这是非常重要的，我就因为没用这个而把不同主题生成的 css 弄混了。如果不想每次手动输 `-d` ，一劳永逸的办法是添加设置 `DELETE_OUTPUT_DIRECTORY = True`。
 
 自定义主题的目录结构：
 ```
