@@ -179,6 +179,11 @@ Pelican 的处理逻辑分为一下几部分：
 - **读取器**，从 HTML、MarkDown 等文件中读取内容（由于系统的可扩展性良好，完全可以添加其它文件的支持），它接受文件，返回 metadata 信息和 HTML 格式的内容
 - **生成器**，生成不同种类的结果，有 `ArticlesGenerator` `PageGenerator` 等，同样可以灵活地配置。
 
+## MarkDown 文章样式
+首先要明白 MarkDown 在「轻量级标记语言」之外的第二种定义：「将纯文本渲染成 HTML 的工具」，John Gruber 的 MarkDown 是用 Perl 语言写的，当然也就有各种语言的移植版本，所以开头的时候导入了 `markdown`，也就是用 Python 版本的包。
+
+md 格式的纯文本被 `markdown` 渲染为 HTML 交给 Pelican 的内容生成器，所以需要做的只是写一份样式表就好了。
+
 ## Pygments 代码高亮
 使用 pip 安装 `markdown` 的时候 Pygments 也同时被安装好了，通过这个扩展我们可以方便地生成 CSS 文件。
 
