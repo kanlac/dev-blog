@@ -9,10 +9,16 @@ Maven 的**本质是一个插件执行框架**，所有工作都是通过插件�
 4. 查看是否安装成功：`mvn -v`
 
 ## 创建项目
-切换到项目目录，执行：
-`$ mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false `
+命令参照：
+	$ mvn -B archetype:generate \
+	  -DarchetypeGroupId=org.apache.maven.archetypes \
+	  -DgroupId=com.mycompany.app \
+	  -DartifactId=my-app
+执行后将根据 `DartifactId` 的值生成目录
 
-`archetype:generate` 称为 Maven **goal**；其中冒号之前的 `archetype` 称为 **plugin**。
+`archetype:generate` 称为 Maven **goal**；其中冒号之前的 `archetype` 称为 **plugin**，这些将在后面详细提到。
+
+创建项目时我们用到了 Maven 的 archetype 机制，archetype 是项目模版，它结合用户的一些输入来构建符合需要的项目
 
 查阅插件列表：[https://maven.apache.org/plugins/index.html](https://maven.apache.org/plugins/index.html)
 
@@ -20,7 +26,7 @@ Maven 的**本质是一个插件执行框架**，所有工作都是通过插件�
 
 > 深入理解 archetype：[Introduction to Archetypes](https://maven.apache.org/guides/introduction/introduction-to-archetypes.html)
 
-## 标准项目结构
+## 标准目录布局
 	my-app
 	|-- pom.xml
 	`-- src
@@ -38,36 +44,37 @@ Maven 的**本质是一个插件执行框架**，所有工作都是通过插件�
 	                        `-- AppTest.java
 
 ## 构建项目
+在 archetype 为我们生成的目录下，编译项目：
+	$ mvn compile
+根据 Maven 采用的约定（convention），编译过的类会放到 `${basedir}/target/classes` 下。相比另一种构建工具 Ant，这种 convention over configuraion 的设计理念有非常明显的优势。
+
+也可以跳过编译直接打包（虽然实际上也会经过编译）：
 	$ mvn package
 执行后，会编译项目并在 target 目录下生成 JAR 包。
 
-测试该 JAR 包，会看到输出 `Hello World!`：
-```
-$ java -cp target/my-app-1.0-SNAPSHOT.jar com.mycompany.app.App
-```
+测试该 JAR 包（执行 Java 程序）：
+	$ java -cp target/my-app-1.0-SNAPSHOT.jar EXECUTABLE_CLASS_PATH
 
-和前面的 `archetype:generate` 不同，这里的 `package` 不是 goal 而是 **phase**（见后文）。
+和前面的 `archetype:generate` 不同，这里的 `compile` 和 `package` 不是 goal 而是 **phase**（见后文）。
 
 > 默认的 Maven 通常已经能满足需求，但如果需要更改缓存位置或是使用 HTTP 协议，则需要对 Maven 进行配置——查阅 [Guide to Configuring Maven](https://maven.apache.org/guides/mini/guide-configuring-maven.html)。
 
 ## 构建生命周期（Build Lifecycle）
-Maven 构建生命周期是一组阶段（phase）的有序序列。**当执行一个阶段时，在该阶段之前已经包括它自身在内的所有阶段会被执行**。比如执行 `compile` 阶段，那么实际执行的阶段有： _validate_ -> _generate-sources_ -> _process-sources_ -> _generate-resources_ -> _process-resources_ -> _compile_ 。
+Maven 构建生命周期是一组阶段（phase）的有序序列。**当执行一个阶段时，在该阶段之前已经包括它自身在内的所有阶段会被执行**。比如执行 `compile` 阶段，那么实际执行的阶段有： *validate* -\> *generate-sources* -\> *process-sources* -\> *generate-resources* -\> *process-resources* -\> *compile* 。
 
 ## Goals & plugins & phases
 重新来梳理一下这几个关键名词之间的关系。
 
 目标（goals）表示一个特定的、对构建和管理工程有帮助的任务，它可能绑定了 0 或多个构建阶段。没有绑定任何构建阶段的目标可以在构建生命周期之外被直接调用执行。
 
-阶段（phases）的序列组成一个构建生命周期，每个阶段定义了目标被执行的顺序。
+阶段（phases）的序列组成一个构建生命周期，每个阶段定义了目标被执行的顺序。虽然我们可以直接执行阶段，但这样的过程实际上最终仍是交给底层的目标来执行[^1]。
 
 插件（plugins）是一组目标的集合。
 
-> 目标 -:[绑定]:-> 阶段 -:[组成]:-> 生命周期
+> 目标 -:[绑定]:-\> 阶段 -:[组成]:-\> 生命周期
 
 `mvn` 命令可以连续执行，如在
-```
-$ mvn clean dependency:copy-dependencies package
-```
+	$ mvn clean dependency:copy-dependencies package
 中，先执行 clean 阶段，然后是 dependency:copy-dependencies 目标，最后 package 阶段。
 
 ## 运行 Maven 工具
@@ -87,15 +94,13 @@ $ mvn clean dependency:copy-dependencies package
 - **clean**：清除之前的构建中创建的 artifacts
 - **site**：为项目生成站点文档
 
-Phases 最后实际上是对应到了底层的 goals，具体每个 phase 是执行了哪些 goals，取决于打包格式是 JAR 还是 WAR。
-
 ### 生成站点
 执行 site 阶段，Maven 会根据 pom.xml 来生成站点
-```
-$ mvn site
-```
+	$ mvn site
 
-## 项目对象模型
+## 项目对象模型 POM
+POM（Project Object Model）是 Maven 项目的基本单元和配置核心，对于新手来说，了解 POM (Project Object Model) 的概念是重要的，建议阅读 [Introduction to the POM](https://maven.apache.org/guides/introduction/introduction-to-the-pom.html)。
+
 对 pom.xml 中的一些元素做必要的解释：
 - **modelVersion**：POM 采用的对象模型版本
 - **groupId**：表示组织或团队的特有标识符，如 `org.apache.maven.plugins` 是为所有 Maven 插件指定的 groupId
@@ -104,7 +109,9 @@ $ mvn site
 - **version**：项目生成的 artifact 的版本。常见的 `SNAPSHOT` 指示正在开发过程中
 - **name**、**url**、**description**：这些通常用在 Maven 生成的文档中
 
-对于新手来说，了解 POM (Project Object Model) 的概念是重要的，建议阅读 [Introduction to the POM](https://maven.apache.org/guides/introduction/introduction-to-the-pom.html)。
-
 ## 编译测试源并运行单元测试
+编译应用源后，如果写了单元测试，可以用 Maven 执行：
+	$ mvn test
 🔘
+
+[^1]:	具体每个 phase 是执行了哪些 goals，取决于打包格式是 JAR 还是 WAR。
