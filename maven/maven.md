@@ -10,10 +10,12 @@ Maven 的**本质是一个插件执行框架**，所有工作都是通过插件�
 
 ## 创建项目
 命令参照：
-	$ mvn -B archetype:generate \
-	  -DarchetypeGroupId=org.apache.maven.archetypes \
-	  -DgroupId=com.mycompany.app \
-	  -DartifactId=my-app
+```bash
+$ mvn -B archetype:generate \
+  -DarchetypeGroupId=org.apache.maven.archetypes \
+  -DgroupId=com.mycompany.app \
+  -DartifactId=my-app
+```
 执行后将根据 `DartifactId` 的值生成目录
 
 `archetype:generate` 称为 Maven **goal**；其中冒号之前的 `archetype` 称为 **plugin**，这些将在后面详细提到。
@@ -27,33 +29,41 @@ Maven 的**本质是一个插件执行框架**，所有工作都是通过插件�
 > 深入理解 archetype：[Introduction to Archetypes](https://maven.apache.org/guides/introduction/introduction-to-archetypes.html)
 
 ## 标准目录布局
-	my-app
-	|-- pom.xml
-	`-- src
-	    |-- main
-	    |   `-- java
-	    |       `-- com
-	    |           `-- mycompany
-	    |               `-- app
-	    |                   `-- App.java
-	    `-- test
-	        `-- java
-	            `-- com
-	                `-- mycompany
-	                    `-- app
-	                        `-- AppTest.java
+```
+my-app
+|-- pom.xml
+`-- src
+    |-- main
+    |   `-- java
+    |       `-- com
+    |           `-- mycompany
+    |               `-- app
+    |                   `-- App.java
+    `-- test
+        `-- java
+            `-- com
+                `-- mycompany
+                    `-- app
+                        `-- AppTest.java
+```
 
 ## 构建项目
 在 archetype 为我们生成的目录下，编译项目：
-	$ mvn compile
+```bash
+$ mvn compile
+```
 根据 Maven 采用的约定（convention），编译过的类会放到 `${basedir}/target/classes` 下。相比另一种构建工具 Ant，这种 convention over configuraion 的设计理念有非常明显的优势。
 
 也可以跳过编译直接打包（虽然实际上也会经过编译）：
-	$ mvn package
+```bash
+$ mvn package
+```
 执行后，会编译项目并在 target 目录下生成 JAR 包。
 
 测试该 JAR 包（执行 Java 程序）：
-	$ java -cp target/my-app-1.0-SNAPSHOT.jar EXECUTABLE_CLASS_PATH
+```bash
+$ java -cp target/my-app-1.0-SNAPSHOT.jar EXECUTABLE_CLASS_PATH
+```
 
 和前面的 `archetype:generate` 不同，这里的 `compile` 和 `package` 不是 goal 而是 **phase**（见后文）。
 
@@ -74,7 +84,9 @@ Maven 构建生命周期是一组阶段（phase）的有序序列。**当执行�
 > 目标 -:[绑定]:-\> 阶段 -:[组成]:-\> 生命周期
 
 `mvn` 命令可以连续执行，如在
-	$ mvn clean dependency:copy-dependencies package
+```bash
+$ mvn clean dependency:copy-dependencies package
+```
 中，先执行 clean 阶段，然后是 dependency:copy-dependencies 目标，最后 package 阶段。
 
 ## 运行 Maven 工具
@@ -96,7 +108,9 @@ Maven 构建生命周期是一组阶段（phase）的有序序列。**当执行�
 
 ### 生成站点
 执行 site 阶段，Maven 会根据 pom.xml 来生成站点
-	$ mvn site
+```bash
+$ mvn site
+```
 
 ## 项目对象模型 POM
 POM（Project Object Model）是 Maven 项目的基本单元和配置核心，对于新手来说，了解 POM (Project Object Model) 的概念是重要的，建议阅读 [Introduction to the POM](https://maven.apache.org/guides/introduction/introduction-to-the-pom.html)。
@@ -111,7 +125,9 @@ POM（Project Object Model）是 Maven 项目的基本单元和配置核心，�
 
 ## 编译测试源并运行单元测试
 编译应用源后，如果写了单元测试，可以用 Maven 执行：
-	$ mvn test
+```bash
+$ mvn test
+```
 🔘
 
 [^1]:	具体每个 phase 是执行了哪些 goals，取决于打包格式是 JAR 还是 WAR。
