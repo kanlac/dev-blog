@@ -119,6 +119,14 @@ POM（Project Object Model）是 Maven 项目的基本单元和配置核心，�
 - **version**：项目生成的 artifact 的版本。常见的 `SNAPSHOT` 指示正在开发过程中
 - **name**、**url**、**description**：这些通常用在 Maven 生成的文档中
 
+## 安装 JAR 到本地 repo
+安装 artifact 到本地仓库（默认路径是 *${user.home}/.m2/repository*），执行：
+```bash
+$ mvn install
+```
+
+安装完毕后，其他的项目就可以把这个 JAR 作为依赖添加进 pom.xml。
+
 ---- 
 
 为什么不建议把 JAR 文件存储到 CVS？
@@ -126,10 +134,5 @@ POM（Project Object Model）是 Maven 项目的基本单元和配置核心，�
 - 除了第一次加载依赖耗时较久外，由于少了很多不必要的文件，项目通常能运行得更快
 - 外部依赖通常不会更新，没必要进行版本控制
 
-如何创建 JAR 并安装到本地 repo？
-安装 artifact 到本地仓库（默认路径是 *${user.home}/.m2/repository*），执行：
-```bash
-$ mvn install
-```
 
 [^1]:	具体每个 phase 是执行了哪些 goals，取决于打包格式是 JAR 还是 WAR。
