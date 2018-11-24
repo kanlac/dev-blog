@@ -16,17 +16,17 @@ from flask import Flask
 # create Flask instance
 app = Flask(__name__) 
 
-# a: route URL to function
+# route URL to function
 @app.route('/')
 def index():
 	return '<h1>Hello My App</h1>'
 
-# b: dynamic route
+# dynamic route
 @app.route('/user/<name>')
 def user(name):
 	return '<h1>hello, %s!</h1>' % name
 
-# c: start server
+# start server
 if __name__ == '__main__':
 	app.run(debug=True)
 ```
@@ -39,25 +39,17 @@ if __name__ == '__main__':
 ### Routes and View Functions
 客户端向服务器发送一个请求，Flask app 的实例接受这个请求，对于这个应用实例，它需要知道对于每一条 URL 请求执行什么操作，所以它有一套 URL 对应到 Python 函数的匹配规则。这种对 URL 和函数之间的联系的处理就叫 **route**。
 
-最简单的定义一个 route 的方式是用 `Flask` 实例提供的装饰器 `route` 来修饰函数。如注释 `a`，这样就把 `index()` 函数注册为应用根目录下的 handler。比如域名是 *www.abc.com*，则访问 *http://www.abc.com* 时就会触发这个 `index()` 函数，客户端收到的 response 即是其返回值。
+最简单的定义一个 route 的方式是用 `Flask` 实例提供的装饰器 `@app.route()` 来修饰函数，这样就把 `index()` 函数注册为某个目录（这里是根目录）下的 handler，函数返回值即是请求的响应。但是这样将 raw HTML 作为响应嵌入到 Python 代码里面非常不利于维护，第三章会介绍更合适的生成响应的方式。类似 `index()` 这样的函数被称为视图函数（**view function**）。
 
-但是这样将响应（HTML 字符串）嵌入到 Python 代码里面非常不利于维护，第三章会介绍更合适的生成响应的方式。
+URL 中尖括号包含的部分称为动态元素（**dynamic component**），视图函数被调用时，动态部分作为参数被传递到 Flask。动态元素默认是字符串类型，类型可以用 `/user/<int:id>` 的形式指定，支持的类型有 `string` `int` `float` 和 `path` 等。`path` 与 `string` 的区别是前者不会把 `/` 作为分隔符。
 
-类似 `index()` 这样的函数被称为视图函数（**view function**）。
-
-使用动态元素（**dynamic component**）可以动态地 route URL（注释 `b`）。Flask 支持的 route 类型有 `string` `int` `float` 和 `path`。`path` 与 `string` 的区别是前者不会把 `/` 作为分隔符。
-示例：`/user/<int:id> `
-
-### 运行
-用 `Flask` 实例的 `app()` 方法来启动服务器（注释 `c`）。然后执行 Python 程序。
-![][image-1] 
-![][image-2]
+进入虚拟环境并直接运行该程序，就可以在 localhost 访问到了。
 
 ### 请求、响应周期
 
 #### a. (Application and Request) Contexts
 Flask 有两种场景（**context**），四个全局场景变量（**context variables**）：
-![][image-3]
+![](DraggedImage-2.jpeg)
 
 在派发一个请求前，Flask 会激活（activates/pushes）两种 contexts，当请求处理完毕时移除。
 
@@ -190,8 +182,8 @@ def user(name):
 ```
 
 #### Jinja2 variable filters
-Jinja2 提供了一些实用的变量过滤器，查阅[官方文档][1]获取更多用法。
-![][image-4]
+Jinja2 提供了一些实用的变量过滤器，查阅[官方文档](http://jinja.pocoo.org/docs/2.10/templates/)获取更多用法。
+![](DraggedImage-3.jpeg)
 例如，Jinja2 默认会对变量进行转义，如果需要传递 HTML 代码，用 `safe` 来避免转义：`{{ variable_name|safe }}`。但要注意，永远不要对不可信变量使用 `safe` 过滤（比如用户提交的表单）。
 
 #### Control Structures
@@ -290,7 +282,7 @@ instance = Bootstrap(app)
 
 Bootstrap 本身是在 base template 的 `styles` 和 `scripts` block 里面定义的，所以如果要继承这两个 block，一定要加上 `{{ super() }}`。
 
-可供使用的 blocks 参考：[https://pythonhosted.org/Flask-Bootstrap/basic-usage.html][2]
+可供使用的 blocks 参考：[https://pythonhosted.org/Flask-Bootstrap/basic-usage.html](https://pythonhosted.org/Flask-Bootstrap/basic-usage.html)
 
 ### 链接处理
 Flask 提供了一个 `url_for()` 方法。几种用法举例：
@@ -390,13 +382,4 @@ class NameForm(Form):
 
 传入构造器的参数，即 `Form` 基类，是属于 Flask-WTF 扩展下的；而 HTML field 和 validator 是在 WTForms 包中定义的。
 
-[^1]:	[http://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html][3]
-
-[1]:	http://jinja.pocoo.org/docs/2.10/templates/
-[2]:	https://pythonhosted.org/Flask-Bootstrap/basic-usage.html
-[3]:	http://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html
-
-[image-1]:	DraggedImage.jpeg
-[image-2]:	DraggedImage-1.jpeg
-[image-3]:	DraggedImage-2.jpeg
-[image-4]:	DraggedImage-3.jpeg
+[^1]:	[http://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html](http://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html)

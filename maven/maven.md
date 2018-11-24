@@ -3,10 +3,17 @@
 Maven 的**本质是一个插件执行框架**，所有工作都是通过插件（plugin）来完成的。使用 Maven 构建工具的目的，是为了「从**最佳实例**中提供一种清晰的路径，把易于理解且高效的模式运用到项目的构建工程中」。它的应用范围还包括项目构建、说明文档、报告、依赖、版本控制、项目发布等。
 
 ## 安装
+
+### 手动安装
 1. 下载：[https://maven.apache.org/download.html](https://maven.apache.org/download.html)
 2. 确保已设置 `JAVA_HOME` 环境变量
 3. 解压文件，放到合适目录下，把 *bin* 目录添加进 `PATH` 环境变量
 4. 查看是否安装成功：`mvn -v`
+
+### Homebrew
+```bash
+$ brew install maven
+```
 
 ## 项目的创建
 命令参照：
@@ -61,8 +68,13 @@ $ mvn package
 执行后，会编译项目并在 *${basedir}/target* 下生成 JAR 包。
 
 测试该 JAR 包（执行 Java 程序）：
+方式一
 ```bash
 $ java -cp target/my-app-1.0-SNAPSHOT.jar EXECUTABLE_CLASS_PATH
+```
+方式二
+```bash
+$ java -jar target/my-app-1.0-SNAPSHOT.jar
 ```
 
 和前面的 `archetype:generate` 不同，这里的 `compile` 和 `package` 不是 goal 而是 **phase**（见后文）。
@@ -101,12 +113,21 @@ Maven 构建生命周期是一组阶段（phase）的有序序列。**当执行�
 ### 插件 Plugins
 插件是一组目标的集合。
 
-
 `mvn` 命令可以一次性执行多个目标或阶段，如在
 ```bash
 $ mvn clean dependency:copy-dependencies package
 ```
 中，先执行 clean 阶段，然后是 dependency:copy-dependencies 目标，最后 package 阶段。
+
+常用插件使用样例：
+查看项目依赖树
+```bash
+$ mvn dependency:tree
+```
+运行 Spring Boot web 应用（spring boot parent 依赖包含的插件）
+```bash
+$ mvn spring-boot:run
+```
 
 ## 项目对象模型 POM
 POM（Project Object Model）是 Maven 项目的基本单元和配置核心，对于新手来说，了解 POM (Project Object Model) 的概念是重要的，建议阅读 [Introduction to the POM](https://maven.apache.org/guides/introduction/introduction-to-the-pom.html)。
@@ -118,6 +139,11 @@ POM（Project Object Model）是 Maven 项目的基本单元和配置核心，�
 - **packaging**：指示 artifact 的打包格式（如 JAR、WAR、EAR 等），同时决定了生命周期中具体的构建处理方式
 - **version**：项目生成的 artifact 的版本。常见的 `SNAPSHOT` 指示正在开发过程中
 - **name**、**url**、**description**：这些通常用在 Maven 生成的文档中
+
+#### POM 中的 parent, dependencies, plugins 标签之间有什么区别
+- `parent` 相当于继承其它的 POM
+- `dependencies` 为项目最终的 artifact 执行所需要的 artifacts，如 Web 项目需要的 Tomcat 等依赖
+- `plugins` 为构建项目 artifact 所需要的 artifacts，如执行 `mvn package` 打包时使用相应的插件标示出可运行的类
 
 ## 安装 JAR 到本地 repo
 安装 artifact 到本地仓库（默认路径是 *${user.home}/.m2/repository*），执行：
