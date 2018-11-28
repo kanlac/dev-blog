@@ -54,7 +54,7 @@ $ sudo dpkg -i /path/to/package.deb
 简单贴几个基本的操作命令。
 - 从 ubuntu 镜像创建容器
 ```bash
-$ docker container create --name CONTAINER --hostname software_docker -mac-address 00:01:02:03:04:05 --ulimit nproc=1024:2048 -it ubuntu /bin/bash
+$ docker container create --name CONTAINER --hostname software_docker --mac-address 00:01:02:03:04:05 --ulimit nproc=1024:2048 -it ubuntu /bin/bash
 ```
 - 启动容器
 ```bash
@@ -90,6 +90,27 @@ $ docker container attach [OPTIONS] CONTAINER
 - `-p` 将容器端口映射到主机
 - `-v` 指定数据卷
 
+### 通过 Dockerfile 构建镜像
+创建一个项目目录，添加好 Dockfile 和一些程序文件后，即可开始构建（创建镜像），使用 `-t` 添加名称或者可选的标签名，格式 `name:tag`
+```
+$ docker build -t friendlyhello .
+```
+
+创建出的镜像存储在本地镜像表中，查看镜像
+```
+$ docker image ls
+REPOSITORY            TAG                 IMAGE ID
+friendlyhello         latest              326387cea398
+```
+
+运行 `friendlyhello` 并匹配容器端口 80 至外部端口 4000
+```
+$ docker run -p 4000:80 friendlyhello
+```
+`-d` 在静默状态下运行（`--detach`），窗口会显示 container ID
+
+对于静默运行的容器，使用 `docker container stop` 停止运行
+
 ## 应用数据的管理
 第一步，选择挂载类型：
 1. *Volumes*。Volume 是由 Docker 管理的、独立于容器之外的（但它也可以在运行容器时自动创建）存储在 `/var/lib/docker/volumes` 目录下；
@@ -118,12 +139,6 @@ $ docker run -d --name devtest --mount src=MY_VOLUME,dst=/app nginx:latest
 $ docker run -d --name devtest -v MY_VOLUME:/app nginx:latest
 ```
 
-不同容器中共享卷的实现：
-![](Xnip2018-11-27_13-04-58.jpg)
-
-使用 `-v` flag 挂载的实现：
-![](Xnip2018-11-27_13-11-29.jpg)
-
 其它技巧：
 - 查看容器使用的是哪种存储类型
 ```bash
@@ -134,12 +149,6 @@ $ docker inspect -f '{{range .Mounts}}{{.Type}}{{end}}' CONTAINER
 $ docker ps -f volume=VOLUME -a
 ```
 
-## GUI 终端的实现
-> 系统环境：macOS 10.14
-
-前往 [https://kitematic.com/](https://kitematic.com/)，下载并解压，将解压后的应用放入 `/Applications` 目录，然后在 Spotlight 中输入 “Kitematic” 并运行，或者在 Docker 状态栏程序菜单中选择 Kitematic 选项。以下为应用主界面。
-![](DraggedImage.jpeg)
-
 ## 容器的远程挂载
 
 ### 方案一：基于 BitTorrent Sync 技术的分布式卷
@@ -148,11 +157,11 @@ $ docker ps -f volume=VOLUME -a
 解决方式：用 BitTorrent Sync 镜像来共享卷。
 
 ![](Screen-Shot-2015-08-17-at-10.55.14.png)
-A：BTSync 服务端作为一个 Docker 容器，挂载了将要分享的卷 `/data`
-B：同一个主机上的另一个容器，它共享 BTSync 服务端上的卷
-C：另一个网络上的客户端，使用 BTSync 服务端生成的 key 以经过 BT 协议引用到共享的数据
-D：BTSync 客户端，挂载 BTSync 服务器上的卷，从而达到数据同步
-E：客户机上的其它容器，同样能共享来自 BTSync 客户端的卷
+- A：BTSync 服务端作为一个 Docker 容器，挂载了将要分享的卷 `/data`
+- B：同一个主机上的另一个容器，它共享 BTSync 服务端上的卷
+- C：另一个网络上的客户端，使用 BTSync 服务端生成的 key 以经过 BT 协议引用到共享的数据
+- D：BTSync 客户端，挂载 BTSync 服务器上的卷，从而达到数据同步
+- E：客户机上的其它容器，同样能共享来自 BTSync 客户端的卷
 
 在第一台主机服务器运行以下命令以配置容器：
 ```bash
@@ -168,10 +177,10 @@ $ docker run -i -t --volumes-from btsync ubuntu /bin/bash
 [D] 
 $ touch /data/shared_from_server_one
 ```
-A：从 ctlc/btsync 镜像运行容器
-B：记住容器的 key 值，待会要用到
-C：交互式模式启动 ubuntu 容器，从 `btsync` 加载卷
-D：添加文件到 `/data` 卷
+- A：从 ctlc/btsync 镜像运行容器
+- B：记住容器的 key 值，待会要用到
+- C：交互式模式启动 ubuntu 容器，从 `btsync` 加载卷
+- D：添加文件到 `/data` 卷
 
 在第二台主机运行以下命令，以实现卷的同步：
 ```bash
@@ -188,9 +197,9 @@ shared_from_server_one
 
 $ touch /data/shared_from_server_two 
 ```
-A：末尾替换为前面生成的 key 值，pull 并启动 `btsync` 客户端容器
-B：交互模式启动挂载了 `btsync-client` 上的卷的容器
-C：第一台主机创建的文件被移交到了第二台主机
+- A：末尾替换为前面生成的 key 值，pull 并启动 `btsync` 客户端容器
+- B：交互模式启动挂载了 `btsync-client` 上的卷的容器
+- C：第一台主机创建的文件被移交到了第二台主机
 
 在第二台主机创建第二个文件 `shared_from_server_two`
 
