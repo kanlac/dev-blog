@@ -39,7 +39,11 @@ if __name__ == '__main__':
 ### Routes and View Functions
 客户端向服务器发送一个请求，Flask app 的实例接受这个请求，对于这个应用实例，它需要知道对于每一条 URL 请求执行什么操作，所以它有一套 URL 对应到 Python 函数的匹配规则。这种对 URL 和函数之间的联系的处理就叫 **route**。
 
-最简单的定义一个 route 的方式是用 `Flask` 实例提供的装饰器 `@app.route()` 来修饰函数，这样就把 `index()` 函数注册为某个目录（这里是根目录）下的 handler，函数返回值即是请求的响应。但是这样将 raw HTML 作为响应嵌入到 Python 代码里面非常不利于维护，第三章会介绍更合适的生成响应的方式。类似 `index()` 这样的函数被称为视图函数（**view function**）。
+最简单的定义一个 route 的方式是用 `Flask` 实例提供的装饰器 `route` 来修饰函数。如注释 `a`，这样就把 `index()` 函数注册为应用根目录下的 handler。比如域名是 *www.abc.com*，则访问 *http://www.abc.com* 时就会触发这个 `index()` 函数，客户端收到的 response 即是其返回值。
+
+但是这样将响应（HTML 字符串）嵌入到 Python 代码里面非常不利于维护，第三章会介绍更合适的生成响应的方式。
+
+类似 `index()` 这样的函数被称为视图函数（**view function**）。
 
 URL 中尖括号包含的部分称为动态元素（**dynamic component**），视图函数被调用时，动态部分作为参数被传递到 Flask。动态元素默认是字符串类型，类型可以用 `/user/<int:id>` 的形式指定，支持的类型有 `string` `int` `float` 和 `path` 等。`path` 与 `string` 的区别是前者不会把 `/` 作为分隔符。
 
@@ -79,16 +83,15 @@ Map([<Rule '/' (HEAD, OPTIONS, GET) -> index>,
  <Rule '/static/<filename>' (HEAD, OPTIONS, GET) -> static>,
  <Rule '/user/<name>' (HEAD, OPTIONS, GET) -> user>])
 ```
+第二个 rule 是 Flask 提供的用于访问静态资源的 route。
 
-注意到这里第二个 rule 不是我们用 `app.route` 装饰器定义的，这是 Flask 特供的用于访问静态资源的 route，关于静态文件会在第三章提到。
-
-`(HEAD, OPTIONS, GET)` 代表的是请求方法（**request method**），Flask 为 route 附上请求方法，这样能实现对于访问同一个 URL 的不同请求，调用不同的 view function。关于区别不同的请求方法会在第四章提及。
+`(HEAD, OPTIONS, GET)` 代表的是请求方法（**request method**），通过为路由附上请求方法，可以针对同一个 URL 调用不同的视图函数。
 
 #### c. Request Hooks
-钩子函数，定义请求派发的前后执行的函数，类似 Java Web 中的过滤器，后面还会提及。
+钩子函数，定义请求派发之前或之后执行的函数，通过装饰器实现。
 
 #### d. Response
-上面的 view function 中我们返回的响应是简单的 HTML 字符串，但我们还可以返回一个 `Response` 对象。可以用 `make_response()` 这个静态方法生成，用它还可以进行 cookie 设置等操作。
+这次让视图函数返回一个  `Response` 对象而不是原始字符串
 ```python
 from flask import make_response 
 
@@ -99,9 +102,8 @@ def index():
     return response
 ```
 
-如果要进行重定向，常用 `redirect(another_url_path)`，它也返回一个 `Response` 对象。
+如果要进行重定向，常用 `redirect(another_url_path)`，它也返回一个 `Response` 对象；如果要进行错误处理，`abort(404)` 能返回 404 状态码。不过要注意的是它不会把控制交还给调用它的函数，而是交还网页服务器抛出异常。
 
-如果要进行错误处理，`abort(404)` 能返回 404 状态码。不过要注意的是它不会把控制交还给调用它的函数，而是交还 web 服务器抛出异常。
 ```python
 from flask import abort 
 
@@ -116,12 +118,12 @@ def get_user(id):
 ### Flask 扩展
 如果我们要对 Flask 服务器进行配置，可以在 `app.run()` 中添加参数，但更方便的方式是通过命令行传参。
 
-先安装 `flask-script`：
+先安装 `flask-script`
 ```
 (venv) $ pip install flask-script
 ```
 
-用 `Manager` 类接管 Flask app：
+用 `Manager` 类接管 Flask app
 ```python
 from flask.ext.script import Manager 
 manager = Manager(app)
@@ -132,7 +134,7 @@ if __name__ == '__main__':
     manager.run()
 ```
 
-这时候再运行程序，就会提示提供参数了：
+这时候再运行程序，就会提示提供参数了
 ```
 (env) $ python3 hello.py
 usage: hello.py [-?] {shell,runserver} ...
@@ -145,11 +147,7 @@ positional arguments:
 optional arguments:
   -?, --help         show this help message and exit
 ```
-安装提示，比如要启动服务器：
-```
-(env) $ python3 hello.py runserver
-```
-配置 host（a.b.c.d:5000）使服务器在局域网络中可访问：
+设置 host（a.b.c.d:5000）示例
 ```
 (env) $ python hello.py runserver --host 0.0.0.0 
 ```
