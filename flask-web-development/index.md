@@ -7,6 +7,11 @@
 
 数据存储方面，用到的是 redis 而不是关系型数据库。redis 是一种内存（in-memory）数据库，仅支持 Unix 系统，但有非官方的 Windows 端。
 
+导入 Flask，同时包含 Jinja2, Werkzeug
+```bash
+(env) $ pip install flask
+```
+
 ## Chapter 2. Basic Application Structure
 最简单的 Flask 应用：
 ```python
@@ -47,7 +52,7 @@ if __name__ == '__main__':
 
 URL 中尖括号包含的部分称为动态元素（**dynamic component**），视图函数被调用时，动态部分作为参数被传递到 Flask。动态元素默认是字符串类型，类型可以用 `/user/<int:id>` 的形式指定，支持的类型有 `string` `int` `float` 和 `path` 等。`path` 与 `string` 的区别是前者不会把 `/` 作为分隔符。
 
-进入虚拟环境并直接运行该程序，就可以在 localhost 访问到了。
+进入虚拟环境并直接运行 `hello.py`，就可以在 localhost 访问到了。
 
 ### 请求、响应周期
 
@@ -55,9 +60,11 @@ URL 中尖括号包含的部分称为动态元素（**dynamic component**），�
 Flask 有两种场景（**context**），四个全局场景变量（**context variables**）：
 ![](DraggedImage-2.jpeg)
 
-在派发一个请求前，Flask 会激活（activates/pushes）两种 contexts，当请求处理完毕时移除。
+在派发一个请求前，Flask 会激活（也叫入栈）两种场景，当请求处理完毕时移除。通过使用场景，可以在视图或 CLI 追踪到 Flask 应用的各类属性数据，而不必在项目的各个模组里反复导入 `app` 实例。
 
-如上表所示，当 application context 被激活，变量 `current_app` 和 `g` 会在线程中可用；request context 激活时同理。如果 context 没有被激活时就访问到变量，会生成错误。
+关于场景的生命周期：当 Flask 应用处理一个请求时，它会入栈一个应用场景和一个请求场景；请求结束时，先出栈请求场景，然后是应用场景。通常来说两者的生命周期都是取决于单个请求的。
+
+在访问场景变量时，如果未先激活场景将会报错
 ```
 >>> from hello import app # Flask instance
 >>> from flask import current_app # context variable
@@ -74,7 +81,7 @@ RuntimeError: working outside of application context
 ```
 
 #### b. Request Dispatching
-用 `Flask` 的 `url_map` 属性可以查看实例中已有的 route map。
+用 `Flask` 的 `url_map` 属性可以查看实例中已有的路由表
 ```
 (env) $ python3
 >>> from hello import app
@@ -83,7 +90,7 @@ Map([<Rule '/' (HEAD, OPTIONS, GET) -> index>,
  <Rule '/static/<filename>' (HEAD, OPTIONS, GET) -> static>,
  <Rule '/user/<name>' (HEAD, OPTIONS, GET) -> user>])
 ```
-第二个 rule 是 Flask 提供的用于访问静态资源的 route。
+第二个规则是 Flask 提供的用于访问静态资源的路由。
 
 `(HEAD, OPTIONS, GET)` 代表的是请求方法（**request method**），通过为路由附上请求方法，可以针对同一个 URL 调用不同的视图函数。
 
@@ -153,7 +160,7 @@ optional arguments:
 ```
 
 ## Chapter 3. Templates
-从第二章了解到，view function 的任务是针对请求生成响应，这对简单的请求没问题，但如果稍微复杂一点就会发现矛盾。比如用户发起一个注册请求，view function 需要 1) 访问数据库创建新记录 2) 生成响应发送给客户端。这样就把业务逻辑（**business logic**）和展示逻辑（**presentation logic**）混淆在了一起，导致代码难以理解且不利于维护。
+从第二章了解到，视图函数的任务是针对请求生成响应，但如果请求比较复杂，比如用户发起一个注册请求，视图函数需要 1) 访问数据库创建新记录 2) 生成响应发送给客户端。这样就把业务逻辑（**business logic**）和展示逻辑（**presentation logic**）混淆在了一起，导致代码难以理解且不利于维护。
 
 把展示层逻辑转移到模版（**template**）即可以提高可维护性。模版是包含响应文本的 HTML 文件，数据由占位符变量表示。而把变量替换为真实的数据的过程就叫做渲染（**rendering**）。
 
@@ -256,10 +263,10 @@ Jinja2 提供了一些实用的变量过滤器，查阅[官方文档](http://jin
 
 **由于修饰笔记耗费太多的时间，为了加快进度，从这里开始往后改变以笔记为首的学习方式，多做引用和直接在原书上批注（这样的话可能以后随时按需拓展）**
 
-### Twitter Bootstrap Integration with Flask Bootstrap
+### 与 Bootstrap 的整合
 Bootstrap 是 Twitter 的开源框架，它提供创建网页的用户界面接口，兼容性好。简单的说就是一个 CSS 和 JS 库。
 
-使用 Bootstrap 有多种方式，可以将编译过的 CSS 和 JS 文件下载下来放到项目中、用包管理器安装、或者用 Bootstrap 官方提供的免费 CDN（通过 HTML `<link>`）。在这里，我们使用第二种方式。
+使用 Bootstrap 有多种方式：1）将编译过的 CSS 和 JS 文件下载下来放到项目中；2）用包管理器安装 [Flask-Bootstrap 扩展](https://pythonhosted.org/Flask-Bootstrap/basic-usage.html)；3）用 Bootstrap 官方提供的免费 CDN（通过 HTML `<link>`）。在这里，我们使用第二种方式。
 
 如何加载 Bootstrap：
 1. 通过虚拟环境安装包
@@ -267,20 +274,20 @@ Bootstrap 是 Twitter 的开源框架，它提供创建网页的用户界面接�
 (env) $ pip install flask-bootstrap
 ```
 2. 在 Python 程序中导入 `Bootstrap` 模块
-3. 用 Flask 应用作为构造器参数实例化 `Bootstrap`（变量名称不重要）
+3. 用 Flask 应用作为构造器参数实例化 `Bootstrap`
 ```python
 from flask_bootstrap import Bootstrap
 app = Flask(__name__)
-instance = Bootstrap(app)
+bootstrap = Bootstrap(app)
 ```
 4. 通过 Jinja2 导入
 ```Jinja2
 {% extends "bootstrap/base.html" %}
 ```
 
-Bootstrap 本身是在 base template 的 `styles` 和 `scripts` block 里面定义的，所以如果要继承这两个 block，一定要加上 `{{ super() }}`。
+Bootstrap 本身是在 base 模版的 `styles` 和 `scripts` 块里面定义的，所以如果要继承这两个块，一定要加上 `{{ super() }}`。
 
-可供使用的 blocks 参考：[https://pythonhosted.org/Flask-Bootstrap/basic-usage.html](https://pythonhosted.org/Flask-Bootstrap/basic-usage.html)
+tip：Flask-Bootstrap 有一个更新、更轻量的版本 [Bootstrap-Flask](https://bootstrap-flask.readthedocs.io/en/latest/)。
 
 ### 链接处理
 Flask 提供了一个 `url_for()` 方法。几种用法举例：
@@ -315,7 +322,7 @@ from flask.ext.moment import Moment
 moment = Moment(app)
 ```
 
-除了 moment.js，Flask-Moment 还依赖于 jquery.js，不过 Bootstrap 已经包含了对前者，所以我们只需要手动导入 moment.js。
+除了 moment.js，Flask-Moment 还依赖于 jquery.js，不过 Bootstrap 已经包含了后者，所以我们只需要手动导入 moment.js。
 
 1. Import module
 ```python
@@ -350,34 +357,44 @@ That was a few seconds ago.
 
 **WTForms** 是 Python web 开发中一个灵活的表单验证即渲染库。它与框架无关，可以搭配任何一种 web 框架和模版引擎使用。
 
-
-
 安装：
 ```
 (env) $ pip install flask-wtf
 ```
 
+对于 Flask 的一些功能，我们有必要为应用配置一个密钥
+```python
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'hard to guess string'
+```
+需要密钥的功能包括 session 的加密签名、CSRF 保护等，而后者又是 WTFroms 的必须项，所以，如果不配置密钥就使用 WTForms，将会出现运行时错误 **A secret key is required to use CSRF**。
+
 ### CSRF 保护
 跨站请求伪造（cross-site request forgery, CSRF）是一种恶意的攻击，盗用经过验证的用户身份执行未经授权的命令，如发送邮件、发消息、盗取账号、转账等隐私风险。
 
-什么情况下会发生这种情况呢？比如你在一家安全措施薄弱的银行网站进行了登录操作，然后打开了另一个不安全网站，这个网站就可以利用你的 cookie 中的登录信息，伪造一个由浏览器发出的转账请求。所以 CSRF 利用到的漏洞在于 web 的隐式身份验证机制，WEB的身份验证机制虽然可以保证一个请求是来自于某个用户的浏览器，但却无法保证该请求是用户批准发送的[^1]。
+什么情况下会发生这种情况呢？比如你在一家安全措施薄弱的银行网站进行了登录操作，然后打开了另一个不安全网站，这个网站就可以利用你的 cookie 中的登录信息，伪造一个由浏览器发出的转账请求。所以 CSRF 利用到的漏洞在于 web 的隐式身份验证机制，WEB 的身份验证机制虽然可以保证一个请求是来自于某个用户的浏览器，但却无法保证该请求是用户批准发送的[^1]。
 
 要实现 CSRF 保护，Flask-WTF 需要应用配置一个密匙。
 
-### Form Classes
-当使用 Flask-WTF 时，每一个表单都由 `Form` 的一个子类表示，这个类定义了表单中的元素，每一个都用一个对象表示。可以为每个单独的对象附上一或多个校验器（validator）来确保用户提交的有效内容。
+### 表单类
+当使用 Flask-WTF 时，每一个表单都由 `Form` 的一个子类表示，这个类定义了表单中的元素，每一个都用一个对象表示。可以为每个单独的对象附上一或多个校验器（validator）来确保用户提交内容有效。
 
 像这样定义一个表单类：
 ```python
-from flask.ext.wtf import Form 
+from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField 
 from wtforms.validators import Required
 
-class NameForm(Form):
+class NameForm(FlaskForm):
     name = StringField('What is your name?', validators=[Required()]) 
     submit = SubmitField('Submit')
 ```
 
-传入构造器的参数，即 `Form` 基类，是属于 Flask-WTF 扩展下的；而 HTML field 和 validator 是在 WTForms 包中定义的。
+表单中用到的各类元素都是 WTFroms 下的，最后由 Flask-From （ WTFroms `Form` 的子类）封装。
+
+WTForms 支持的 HTML 域：
+![](DraggedImage.jpeg)
+校验器：
+![](DraggedImage-1.jpeg)
 
 [^1]:	[http://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html](http://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html)
